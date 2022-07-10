@@ -52,6 +52,7 @@ END CATCH
 
 exec spGetAllUser
 
+--Creating StoredProcedure For UserLogin Operation
 create procedure spUserLogin(
 @Email varchar(50),
 @Password varchar(255)
@@ -71,3 +72,22 @@ SELECT
 END CATCH
 
 exec spUserLogin 'vinay@gmail.com','Vinay@999'
+
+--Creating Stored Procedure For ForgetPassword api
+create procedure spUserForgetPassword(
+@Email varchar(50)
+)
+AS
+BEGIN TRY
+select * from Users where Email=@Email
+END TRY
+BEGIN CATCH
+SELECT
+      ERROR_NUMBER() AS ErrorNumber,
+	  ERROR_STATE() AS ErrorState,
+	  ERROR_PROCEDURE() AS ErrorProcedure,
+	  ERROR_LINE() AS ErrorLine,
+	  ERROR_MESSAGE() AS ErrorMessage
+END CATCH
+
+exec spUserForgetPassword 'vinay@gmail.com'

@@ -57,5 +57,18 @@ namespace Fundonote_ADO.NET.Controllers
                 throw ex;
             }
         }
+        [HttpPost("ForgetPassword")]
+        public IActionResult UserForgetPassword(string email)
+        {
+            try
+            {
+                this.userBL.UserForgetPassword(email);
+                return Ok(new { sucess = true, Message = "Password Reset Link sent Successfully..." });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

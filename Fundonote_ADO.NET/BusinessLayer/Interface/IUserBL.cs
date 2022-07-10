@@ -10,5 +10,6 @@ namespace BusinessLayer.Interface
         public void AddUser(UsersModel users);
         public List<GetAllUserModel> GetAllUser();
         public string LoginUser(LoginUserModel loginUser);
+        public bool UserForgetPassword(string email);
     }
 }
