@@ -86,5 +86,68 @@ namespace RepositoryLayer.Services
                 sqlConnection.Close();
             }
         }
+        public string LoginUser(LoginUserModel userLogin)
+        {
+            SqlConnection sqlConnection = new SqlConnection(connectionString);
+            try
+            {
+                using (sqlConnection)
+                {
+                    sqlConnection.Open();
+                    SqlCommand cmd = new SqlCommand("spUserLogin", sqlConnection);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@Email", userLogin.Email);
+                    cmd.Parameters.AddWithValue("@Password", userLogin.Password);
+                    cmd.ExecuteNonQuery();
+
+                    SqlDataReader reader = cmd.ExecuteReader();
+                    GetAllUserModel response = new GetAllUserModel();
+                    if (reader.Read())
+                    {
+                        response.UserId = reader["UserId"] == DBNull.Value ? default : reader.GetInt32("UserId");
+                        response.Email = reader["Email"] == DBNull.Value ? default : reader.GetString("Email");
+                        response.Password = reader["Password"] == DBNull.Value ? default : reader.GetString("Password");
+                    }
+                    return GenerateJWTToken(response.Email, response.UserId);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            finally
+            {
+                sqlConnection.Close();
+            }
+        }
+
+        //Method to Generate JWT Token for Athuntication and Athorization
+        private string GenerateJWTToken(string email, int userId)
+        {
+            try
+            {
+                // generate token
+                var tokenHandler = new JwtSecurityTokenHandler();
+                var tokenKey = Encoding.ASCII.GetBytes("THIS_IS_MY_KEY_TO_GENERATE_TOKEN");
+                var tokenDescriptor = new SecurityTokenDescriptor
+                {
+                    Subject = new ClaimsIdentity(new Claim[]
+                    {
+                    new Claim("email", email),
+                    new Claim("userId",userId.ToString())
+                    }),
+                    Expires = DateTime.UtcNow.AddHours(2),
+
+                    SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey), SecurityAlgorithms.HmacSha256Signature)
+                };
+                var token = tokenHandler.CreateToken(tokenDescriptor);
+                return tokenHandler.WriteToken(token);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }
