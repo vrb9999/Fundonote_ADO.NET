@@ -1,8 +1,11 @@
 ﻿using BusinessLayer.Interface;
 using DatabaseLayer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
 
 namespace Fundonote_ADO.NET.Controllers
 {
@@ -57,12 +60,12 @@ namespace Fundonote_ADO.NET.Controllers
                 throw ex;
             }
         }
-        [HttpPost("ForgetPassword")]
+        [HttpPost("ForgetPassword/{email}")]
         public IActionResult UserForgetPassword(string email)
         {
             try
             {
-                this.userBL.UserForgetPassword(email);
+                bool result = this.userBL.UserForgetPassword(email);
                 return Ok(new { sucess = true, Message = "Password Reset Link sent Successfully..." });
             }
             catch (Exception ex)

@@ -69,7 +69,7 @@ namespace RepositoryLayer.Services
                         getAllUser.Firstname = Convert.ToString(reader["Firstname"]);
                         getAllUser.Lastname = Convert.ToString(reader["Lastname"]);
                         getAllUser.Email = Convert.ToString(reader["Email"]);
-                        getAllUser.Password = Convert.ToString(reader.ToString());
+                        getAllUser.Password = Convert.ToString(reader["Password"]);
                         getAllUser.CreateDate = Convert.ToDateTime(reader["CreateDate"]);
                         getAllUser.MoidifyDate = Convert.ToDateTime(reader["MoidifyDate"]);
 
@@ -135,8 +135,8 @@ namespace RepositoryLayer.Services
                 {
                     Subject = new ClaimsIdentity(new Claim[]
                     {
-                    new Claim("email", email),
-                    new Claim("userId",userId.ToString())
+                    new Claim("Email", email),
+                    new Claim("UserId",userId.ToString())
                     }),
                     Expires = DateTime.UtcNow.AddHours(2),
 
@@ -232,7 +232,7 @@ namespace RepositoryLayer.Services
                 {
                     Subject = new ClaimsIdentity(new Claim[]
                     {
-                        new Claim("email", email)
+                        new Claim("Email", email)
                     }),
                     Expires = DateTime.UtcNow.AddHours(2),
 
